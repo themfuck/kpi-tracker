@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kpi-tracker:prod
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=sqlite
+      # If using SQLite in production container, ensure the file persists!
+      # Usually better to use external DB service (mysql/pgsql)
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      # Persist storage folder (uploads, logs, sqlite db if used there)
+      - ./storage:/var/www/html/storage
+    labels:
+      - "traefik.enable=true"
+      
+      # HTTP Router (Redirect to HTTPS)
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.entrypoints=web"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.rule=Host(`kpi.optimus-code.com`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.middlewares=${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect"
+      
+      # Middleware for HTTPS Redirect
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect.redirectscheme.permanent=true"
+      
+      # HTTPS Router
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.entrypoints=websecure"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.rule=Host(`kpi.optimus-code.com`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.tls=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.tls.certresolver=myresolver"
+      
+      # Service Port (Container listens on 80)
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME:-kpi-tracker}.loadbalancer.server.port=80"
+
+    restart: unless-stopped
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+    name: ${TRAEFIK_NETWORK:-traefik_network}
