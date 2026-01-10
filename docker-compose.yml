@@ -1,4 +1,5 @@
-version: "3.9"
+# Before running: Generate APP_KEY with: docker run --rm kpi-tracker:prod php artisan key:generate --show
+# Then set it in your .env or export APP_KEY=base64:...
 
 services:
   app:
