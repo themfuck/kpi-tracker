@@ -24,6 +24,8 @@ class Host extends Model
 
     public function getPhotoUrlAttribute()
     {
-        return $this->photo_path ? asset('storage/' . $this->photo_path) : null;
+        return $this->photo_path
+            ? asset('storage/' . $this->photo_path) 
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=random';
     }
 }

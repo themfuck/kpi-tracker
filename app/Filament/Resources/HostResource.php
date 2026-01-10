@@ -67,7 +67,7 @@ class HostResource extends Resource
                 Tables\Columns\ImageColumn::make('photo_path')
                     ->label('Foto')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png')),
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&background=random'),
                 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
