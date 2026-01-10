@@ -1,0 +1,44 @@
+# Dependencies (will be installed in container)
+/vendor/
+/node_modules/
+
+# Development files
+.git/
+.github/
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+/public/hot
+/public/storage
+/public/build
+
+# Storage (will be mounted as volume)
+/storage/*.key
+/storage/logs/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/testing/
+/storage/framework/views/
+
+# Testing
+/tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Documentation
+*.md
+!README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.cache
