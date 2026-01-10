@@ -36,13 +36,15 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     git \
-    linux-headers
+    linux-headers \
+    sqlite-dev
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     intl \
     pdo_mysql \
+    pdo_sqlite \
     zip \
     gd \
     bcmath \
