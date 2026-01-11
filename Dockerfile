@@ -33,10 +33,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     gd \
     bcmath \
     opcache \
-    dom \
-    fileinfo \
-    session \
-    tokenizer
+    dom
 
 # Configure Nginx and Supervisor
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
