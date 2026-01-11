@@ -40,6 +40,9 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 # Copy Application Code (vendor already included from local)
 COPY . .
 
+# Install/verify vendor dependencies (in case vendor wasn't copied properly)
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
