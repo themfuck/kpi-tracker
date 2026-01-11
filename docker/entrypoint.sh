@@ -28,17 +28,7 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 echo "🗄️  Running migrations..."
 php artisan migrate --force
 
-# Check if Shield config exists, if not publish it
-if [ ! -f "/var/www/html/config/filament-shield.php" ]; then
-    echo "🛡️  Publishing Shield config..."
-    php artisan vendor:publish --tag=filament-shield-config --force
-fi
-
-# Install Shield (generate permissions)
-echo "🛡️  Installing Shield..."
-php artisan shield:install
-
-# Seed super admin user
+# Seed super admin user (this will also create the role)
 echo "👤 Creating super admin user..."
 php artisan db:seed --class=SuperAdminSeeder --force
 
