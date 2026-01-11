@@ -36,7 +36,7 @@ fi
 
 # Install Shield (generate permissions)
 echo "🛡️  Installing Shield..."
-php artisan shield:install --minimal
+php artisan shield:install --only
 
 # Seed super admin user
 echo "👤 Creating super admin user..."
