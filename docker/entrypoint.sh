@@ -3,15 +3,20 @@ set -e
 
 echo "🚀 Starting Laravel application setup..."
 
-# Ensure DB_DATABASE is set correctly
-export DB_DATABASE=/var/www/html/storage/database.sqlite
+# Get database path from Laravel config
+DB_PATH=$(php artisan tinker --execute="echo config('database.connections.sqlite.database');")
+
+echo "📍 Database path: $DB_PATH"
 
 # Create database file if it doesn't exist
-if [ ! -f "$DB_DATABASE" ]; then
-    echo "📁 Creating SQLite database file..."
-    mkdir -p "$(dirname "$DB_DATABASE")"
-    touch "$DB_DATABASE"
-    chmod 664 "$DB_DATABASE"
+if [ ! -f "$DB_PATH" ]; then
+    echo "📁 Creating SQLite database file at $DB_PATH..."
+    mkdir -p "$(dirname "$DB_PATH")"
+    touch "$DB_PATH"
+    chmod 664 "$DB_PATH"
+    chown www-data:www-data "$DB_PATH"
+else
+    echo "✓ Database file already exists"
 fi
 
 # Set proper permissions
