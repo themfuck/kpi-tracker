@@ -1,5 +1,4 @@
-# Dependencies (will be installed in container)
-/vendor/
+# Dependencies (node_modules will be skipped, vendor will be copied)
 /node_modules/
 
 # Development files
