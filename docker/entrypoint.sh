@@ -24,6 +24,10 @@ echo "🔐 Setting permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Publish Spatie Permission migrations
+echo "📦 Publishing Spatie Permission migrations..."
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="permission-migrations" --force
+
 # Run migrations
 echo "🗄️  Running migrations..."
 php artisan migrate --force
