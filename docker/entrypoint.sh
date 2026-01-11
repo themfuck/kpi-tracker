@@ -3,11 +3,15 @@ set -e
 
 echo "🚀 Starting Laravel application setup..."
 
+# Ensure DB_DATABASE is set correctly
+export DB_DATABASE=/var/www/html/storage/database.sqlite
+
 # Create database file if it doesn't exist
-if [ ! -f "/var/www/html/storage/database.sqlite" ]; then
+if [ ! -f "$DB_DATABASE" ]; then
     echo "📁 Creating SQLite database file..."
-    touch /var/www/html/storage/database.sqlite
-    chmod 664 /var/www/html/storage/database.sqlite
+    mkdir -p "$(dirname "$DB_DATABASE")"
+    touch "$DB_DATABASE"
+    chmod 664 "$DB_DATABASE"
 fi
 
 # Set proper permissions
