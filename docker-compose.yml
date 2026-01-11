@@ -19,6 +19,9 @@ services:
     volumes:
       # Persist storage folder (uploads, logs, sqlite db if used there)
       - ./storage:/var/www/html/storage
+    ports:
+      # TEMPORARY: Remove after DNS is configured
+      - "8080:80"
     labels:
       - "traefik.enable=true"
       
