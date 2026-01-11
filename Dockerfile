@@ -19,10 +19,8 @@ RUN apk add --no-cache \
     freetype-dev \
     git \
     linux-headers \
-    sqlite-dev
-
-# Install Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+    sqlite-dev \
+    composer
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
