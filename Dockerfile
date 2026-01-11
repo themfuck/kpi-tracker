@@ -3,10 +3,6 @@ FROM php:8.2-fpm-alpine
 WORKDIR /var/www/html
 
 # Install system dependencies
-# - nginx: Web server
-# - supervisor: Process manager
-# - icu-dev / intl: Required by Filament/Laravel
-# - libpng-dev, etc: For image processing (GD)
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -20,7 +16,6 @@ RUN apk add --no-cache \
     git \
     linux-headers \
     sqlite-dev \
-    composer \
     libxml2-dev
 
 # Install PHP extensions
@@ -39,11 +34,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 
-# Copy Application Code (vendor already included from local)
+# Copy Application Code (INCLUDING vendor from local)
 COPY . .
-
-# Install/verify vendor dependencies (in case vendor wasn't copied properly)
-RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
