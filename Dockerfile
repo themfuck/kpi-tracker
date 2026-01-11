@@ -37,11 +37,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 
-# Copy Application Code
+# Copy Application Code (vendor already included from local)
 COPY . .
-
-# Optimize autoloader (vendor already copied from local)
-RUN composer dump-autoload --optimize --no-dev
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
