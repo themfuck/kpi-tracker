@@ -34,6 +34,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 
+# Copy entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Copy Application Code (INCLUDING vendor from local)
 COPY . .
 
@@ -43,5 +47,6 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port 80
 EXPOSE 80
 
-# Start Supervisor (runs Nginx + PHP-FPM)
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Use entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
