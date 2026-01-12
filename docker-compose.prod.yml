@@ -1,0 +1,55 @@
+# Optimized Production Docker Compose
+# Usage: docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      # Use BuildKit for better caching
+      cache_from:
+        - kpi-tracker:latest
+      cache_to:
+        - type=inline
+    image: kpi-tracker:latest
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=https://kpi.optimus-code.com
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/html/storage/database.sqlite
+    volumes:
+      # Only mount essential persistent data
+      - ./storage:/var/www/html/storage
+      # Optional: mount specific config if needed
+      # - ./config/custom.php:/var/www/html/config/custom.php:ro
+    ports:
+      - "8080:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.entrypoints=web"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.rule=Host(`kpi.optimus-code.com`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-http.middlewares=${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect"
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.entrypoints=websecure"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.rule=Host(`kpi.optimus-code.com`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.tls=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-kpi-tracker}-https.tls.certresolver=myresolver"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME:-kpi-tracker}.loadbalancer.server.port=80"
+    restart: unless-stopped
+    networks:
+      - traefik
+    # Resource limits to prevent memory issues
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+networks:
+  traefik:
+    external: true
+    name: ${TRAEFIK_NETWORK:-nginx-proxy}

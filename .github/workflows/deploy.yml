@@ -1,0 +1,43 @@
+name: Auto Deploy to Production
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /path/to/your/project
+          
+          echo "🔄 Starting deployment..."
+          
+          # Pull latest code
+          git pull origin main
+          
+          # Stop containers
+          docker compose down
+          
+          # Clean up old images and build cache
+          docker system prune -f
+          docker builder prune -f
+          
+          # Rebuild and start
+          docker compose up -d --build --force-recreate
+          
+          # Clean up dangling images after build
+          docker image prune -f
+          
+          echo "✅ Deployment completed!"
+          
+          # Show running containers
+          docker compose ps
