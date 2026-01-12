@@ -175,6 +175,43 @@ app/
    - Jumlah Error
 4. Save
 
+## 🤖 Input Data via Telegram Bot
+
+Aplikasi ini mendukung input data melalui Telegram Bot untuk kemudahan entry data dari mobile.
+
+### Setup Telegram Bot
+
+1. **Buat bot di Telegram** (via @BotFather)
+2. **Tambahkan konfigurasi ke `.env`:**
+   ```env
+   TELEGRAM_BOT_TOKEN=your_bot_token_here
+   TELEGRAM_WEBHOOK_TOKEN=your_random_secret_token
+   ```
+
+3. **Set webhook:**
+   ```bash
+   php artisan telegram:webhook set
+   ```
+
+### Cara Menggunakan Bot
+
+Format input data:
+```
+NAMA_HOST|TANGGAL|JAM_LIVE|GMV|ORDERS|VIEWERS|LIKES
+```
+
+Contoh:
+```
+Andi|2026-01-12|3.5|15000000|120|5000|1200
+```
+
+**Perintah Bot:**
+- `/start` - Memulai bot dan melihat panduan
+- `/help` - Melihat format input lengkap
+
+📖 **Lihat panduan lengkap:** [TELEGRAM-BOT-GUIDE.md](TELEGRAM-BOT-GUIDE.md)
+
+
 ## 🏆 Melihat Ranking
 
 ### Di Dashboard
